@@ -26,6 +26,11 @@
  */
 @property (nonatomic, strong) UIColor *tintColor;
 
+/**
+ * The color of the tick view
+ */
+@property (nonatomic, strong) UIColor *tickColor;
+
 
 @property(nonatomic,assign)BOOL isUpload;
 

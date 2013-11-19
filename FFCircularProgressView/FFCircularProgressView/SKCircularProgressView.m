@@ -28,35 +28,47 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor clearColor];
-        
-        _lineWidth = fmaxf(self.frame.size.width * 0.025, 1.f);
-        _tintColor = [UIColor ios7Blue];
-        
-        self.progressBackgroundLayer = [CAShapeLayer layer];
-        _progressBackgroundLayer.strokeColor = _tintColor.CGColor;
-        _progressBackgroundLayer.fillColor = self.backgroundColor.CGColor;
-        _progressBackgroundLayer.lineCap = kCALineCapRound;
-        _progressBackgroundLayer.lineWidth = _lineWidth;
-        [self.layer addSublayer:_progressBackgroundLayer];
-        
-        self.progressLayer = [CAShapeLayer layer];
-        _progressLayer.strokeColor = _tintColor.CGColor;
-        _progressLayer.fillColor = nil;
-        _progressLayer.lineCap = kCALineCapSquare;
-        _progressLayer.lineWidth = _lineWidth * 2.0;
-        [self.layer addSublayer:_progressLayer];
-        
-        self.iconLayer = [CAShapeLayer layer];
-        _iconLayer.strokeColor = _tintColor.CGColor;
-        _iconLayer.fillColor = nil;
-        _iconLayer.lineCap = kCALineCapButt;
-        _iconLayer.lineWidth = _lineWidth;
-        _iconLayer.fillRule = kCAFillRuleNonZero;
-        [self.layer addSublayer:_iconLayer];
-        
+        [self setup];
     }
     return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void)setup {
+    self.backgroundColor = [UIColor clearColor];
+    
+    _lineWidth = fmaxf(self.frame.size.width * 0.025, 1.f);
+    _tintColor = [UIColor ios7Blue];
+    _tickColor = [UIColor whiteColor];
+    
+    self.progressBackgroundLayer = [CAShapeLayer layer];
+    _progressBackgroundLayer.strokeColor = _tintColor.CGColor;
+    _progressBackgroundLayer.fillColor = self.backgroundColor.CGColor;
+    _progressBackgroundLayer.lineCap = kCALineCapRound;
+    _progressBackgroundLayer.lineWidth = _lineWidth;
+    [self.layer addSublayer:_progressBackgroundLayer];
+    
+    self.progressLayer = [CAShapeLayer layer];
+    _progressLayer.strokeColor = _tintColor.CGColor;
+    _progressLayer.fillColor = nil;
+    _progressLayer.lineCap = kCALineCapSquare;
+    _progressLayer.lineWidth = _lineWidth * 2.0;
+    [self.layer addSublayer:_progressLayer];
+    
+    self.iconLayer = [CAShapeLayer layer];
+    _iconLayer.strokeColor = _tintColor.CGColor;
+    _iconLayer.fillColor = nil;
+    _iconLayer.lineCap = kCALineCapButt;
+    _iconLayer.lineWidth = _lineWidth;
+    _iconLayer.fillRule = kCAFillRuleNonZero;
+    [self.layer addSublayer:_iconLayer];
 }
 
 - (void)setTintColor:(UIColor *)tintColor
@@ -65,6 +77,11 @@
     _progressBackgroundLayer.strokeColor = tintColor.CGColor;
     _progressLayer.strokeColor = tintColor.CGColor;
     _iconLayer.strokeColor = tintColor.CGColor;
+}
+
+- (void)setTickColor:(UIColor *)tickColor
+{
+    _tickColor = tickColor;
 }
 
 - (void)drawRect:(CGRect)rect
@@ -166,7 +183,7 @@
     [tickPath applyTransform:CGAffineTransformMakeTranslation(radius * .32, 1.02 * radius)];
     
     [_iconLayer setPath:tickPath.CGPath];
-    [_iconLayer setFillColor:[UIColor whiteColor].CGColor];
+    [_iconLayer setFillColor:self.tickColor.CGColor];
     [_progressBackgroundLayer setFillColor:_progressLayer.strokeColor];
 }
 

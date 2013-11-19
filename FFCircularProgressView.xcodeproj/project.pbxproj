@@ -92,7 +92,6 @@
 		2BD8ACE2179535F70032D47A = {
 			isa = PBXGroup;
 			children = (
-				2B6E80501795B3AE002F3C9F /* SenTestingKit.framework */,
 				2BD8ACF4179535F80032D47A /* FFCircularProgressView */,
 				2BD8AD0D179535F80032D47A /* FFCircularProgressViewTests */,
 				2BD8ACED179535F80032D47A /* Frameworks */,
@@ -112,6 +111,7 @@
 		2BD8ACED179535F80032D47A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2B6E80501795B3AE002F3C9F /* SenTestingKit.framework */,
 				2B6E804E1795B371002F3C9F /* CoreGraphics.framework */,
 				2B6E804C1795B35D002F3C9F /* QuartzCore.framework */,
 				2BD8ACEE179535F80032D47A /* Foundation.framework */,

@@ -1,15 +1,15 @@
 //
-//  FFCircularProgressBar.m
-//  FFCircularProgressBar
+//  SKCircularProgressView.m
+//  SKCommon
 //
-//  Created by Fabiano Francesconi on 16/07/13.
-//  Copyright (c) 2013 Fabiano Francesconi. All rights reserved.
+//  Created by 尚 凯 on 13-10-9.
+//  Copyright (c) 2013年 Shangkai. All rights reserved.
 //
 
-#import "FFCircularProgressView.h"
+#import "SKCircularProgressView.h"
 #import "UIColor+iOS7.h"
 
-@interface FFCircularProgressView()
+@interface SKCircularProgressView()
 @property (nonatomic, strong) CAShapeLayer *progressBackgroundLayer;
 @property (nonatomic, strong) CAShapeLayer *progressLayer;
 @property (nonatomic, strong) CAShapeLayer *iconLayer;
@@ -17,11 +17,12 @@
 @property (nonatomic, assign) BOOL isSpinning;
 @end
 
-@implementation FFCircularProgressView
+@implementation SKCircularProgressView
 
-#define kArrowSizeRatio .12
+
+#define kArrowSizeRatio .18
 #define kStopSizeRatio  .3
-#define kTickWidthRatio .3
+#define kTickWidthRatio .4
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -38,14 +39,14 @@
         _progressBackgroundLayer.lineCap = kCALineCapRound;
         _progressBackgroundLayer.lineWidth = _lineWidth;
         [self.layer addSublayer:_progressBackgroundLayer];
-
+        
         self.progressLayer = [CAShapeLayer layer];
         _progressLayer.strokeColor = _tintColor.CGColor;
         _progressLayer.fillColor = nil;
         _progressLayer.lineCap = kCALineCapSquare;
         _progressLayer.lineWidth = _lineWidth * 2.0;
         [self.layer addSublayer:_progressLayer];
-
+        
         self.iconLayer = [CAShapeLayer layer];
         _iconLayer.strokeColor = _tintColor.CGColor;
         _iconLayer.fillColor = nil;
@@ -66,23 +67,19 @@
     _iconLayer.strokeColor = tintColor.CGColor;
 }
 
--(void)useDefaultTintColor{
-    [self setTintColor:[UIColor ios7Blue]];
-}
-
 - (void)drawRect:(CGRect)rect
 {
     // Make sure the layers cover the whole view
     _progressBackgroundLayer.frame = self.bounds;
     _progressLayer.frame = self.bounds;
     _iconLayer.frame = self.bounds;
-
+    
     CGPoint center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
     CGFloat radius = (self.bounds.size.width - _lineWidth)/2;
-
+    
     // Draw background
     [self drawBackgroundCircle:_isSpinning];
-
+    
     // Draw progress
     CGFloat startAngle = - ((float)M_PI / 2); // 90 degrees
     // CGFloat endAngle = (2 * (float)M_PI) + startAngle;
@@ -90,7 +87,7 @@
     UIBezierPath *processPath = [UIBezierPath bezierPath];
     processPath.lineCapStyle = kCGLineCapButt;
     processPath.lineWidth = _lineWidth;
-
+    
     radius = (self.bounds.size.width - _lineWidth*3) / 2.0;
     [processPath addArcWithCenter:center radius:radius startAngle:startAngle endAngle:endAngle clockwise:YES];
     
@@ -98,8 +95,6 @@
     
     if ([self progress] == 1.0) {
         [self drawTick];
-    } else if (([self progress] > 0) && [self progress] < 1.0) {
-        [self drawStop];
     } else {
         [self drawArrow];
     }
@@ -134,9 +129,9 @@
     if (partial) {
         endAngle = (1.8F * (float)M_PI) + startAngle;
     }
-
+    
     [processBackgroundPath addArcWithCenter:center radius:radius startAngle:startAngle endAngle:endAngle clockwise:YES];
-
+    
     _progressBackgroundLayer.path = processBackgroundPath.CGPath;
 }
 
@@ -168,38 +163,18 @@
     [tickPath applyTransform:CGAffineTransformMakeRotation(-M_PI_4)];
     
     // ...and move it into the right place.
-    [tickPath applyTransform:CGAffineTransformMakeTranslation(radius * .46, 1.02 * radius)];
+    [tickPath applyTransform:CGAffineTransformMakeTranslation(radius * .32, 1.02 * radius)];
     
     [_iconLayer setPath:tickPath.CGPath];
     [_iconLayer setFillColor:[UIColor whiteColor].CGColor];
     [_progressBackgroundLayer setFillColor:_progressLayer.strokeColor];
 }
 
-- (void) drawStop {
-    CGFloat radius = (self.bounds.size.width)/2;
-    CGFloat ratio = kStopSizeRatio;
-    CGFloat sideSize = self.bounds.size.width * ratio;
-    
-    UIBezierPath *stopPath = [UIBezierPath bezierPath];
-    [stopPath moveToPoint:CGPointMake(0, 0)];
-    [stopPath addLineToPoint:CGPointMake(sideSize, 0.0)];
-    [stopPath addLineToPoint:CGPointMake(sideSize, sideSize)];
-    [stopPath addLineToPoint:CGPointMake(0.0, sideSize)];
-    [stopPath closePath];
-    
-    // ...and move it into the right place.
-    [stopPath applyTransform:CGAffineTransformMakeTranslation(radius * (1-ratio), radius* (1-ratio))];
-    
-    [_iconLayer setPath:stopPath.CGPath];
-    [_iconLayer setStrokeColor:_progressLayer.strokeColor];
-    [_iconLayer setFillColor:self.tintColor.CGColor];
-}
-
 - (void) drawArrow {
     CGFloat radius = (self.bounds.size.width)/2;
     CGFloat ratio = kArrowSizeRatio;
     CGFloat segmentSize = self.bounds.size.width * ratio;
-
+    
     // Draw icon
     
     UIBezierPath *path = [UIBezierPath bezierPath];
@@ -212,11 +187,21 @@
     [path addLineToPoint:CGPointMake(0.0, segmentSize)];
     [path addLineToPoint:CGPointMake(0.0, 0.0)];
     [path closePath];
-
-    [path applyTransform:CGAffineTransformMakeTranslation(-segmentSize /2.0, -segmentSize / 1.2)];
-    [path applyTransform:CGAffineTransformMakeTranslation(radius * (1-ratio), radius* (1-ratio))];
+    
+    if(_isUpload){
+        // Now rotate it through 180 degrees...
+        [path applyTransform:CGAffineTransformMakeRotation(M_PI)];
+        
+        [path applyTransform:CGAffineTransformMakeTranslation(segmentSize /2.0, segmentSize / 1.2)];
+        [path applyTransform:CGAffineTransformMakeTranslation(radius * (1+ratio), radius* (1+ratio))];
+    } else {
+        [path applyTransform:CGAffineTransformMakeTranslation(-segmentSize /2.0, -segmentSize / 1.2)];
+        [path applyTransform:CGAffineTransformMakeTranslation(radius * (1-ratio), radius* (1-ratio))];
+    }
+    
     _iconLayer.path = path.CGPath;
-    _iconLayer.fillColor = nil;
+    _iconLayer.fillColor = [UIColor whiteColor].CGColor;
+    [_progressBackgroundLayer setFillColor:_progressLayer.strokeColor];
 }
 
 #pragma mark Setters
@@ -236,6 +221,14 @@
         }
         
         [self setNeedsDisplay];
+    }
+}
+
+-(void)setIsUpload:(BOOL)isUpload{
+    if(_isUpload != isUpload){
+        _isUpload = isUpload;
+        [self drawArrow];
+        //[self setNeedsDisplay];
     }
 }
 
@@ -274,5 +267,6 @@
     [_progressBackgroundLayer removeAllAnimations];
     self.isSpinning = NO;
 }
+
 
 @end

@@ -1,16 +1,14 @@
 //
-//  FFCircularProgressBar.h
-//  FFCircularProgressBar
-//
-//  Created by Fabiano Francesconi on 16/07/13.
-//  Copyright (c) 2013 Fabiano Francesconi. All rights reserved.
+//  SKCircularProgressView.h
+//  SKCommon
+//  用作Dropbox上传状态显示，主要改的地方是下载箭头改为上传箭头
+//  Created by 尚 凯 on 13-10-9.
+//  Copyright (c) 2013年 Shangkai. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
-#import <CoreGraphics/CoreGraphics.h>
 
-@interface FFCircularProgressView : UIView
+@interface SKCircularProgressView : UIView
 
 @property (nonatomic, assign, readonly) BOOL isSpinning;
 /**
@@ -29,7 +27,7 @@
 @property (nonatomic, strong) UIColor *tintColor;
 
 
--(void)useDefaultTintColor;
+@property(nonatomic,assign)BOOL isUpload;
 
 /**
  * Make the background layer to spin around its center. This should be called in the main thread.
@@ -41,5 +39,4 @@
  * WARN: This implementation remove all animations from background layer.
  **/
 - (void) stopSpinProgressBackgroundLayer;
-
 @end
